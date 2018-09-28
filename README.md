@@ -16,7 +16,7 @@ Các bài viết của Rachel được code trên Python, do đó, bài viết c
 
 1) Ngày 1: 
   - Dữ liệu giải bóng bầu dục Mỹ: [tại đây](https://www.kaggle.com/maxhorowitz/nflplaybyplay2009to2016)
-  - Dữ liệu cấp phép xây dựng tại San Francisco (Mỹ): [tại đây](https://www.kaggle.com/maxhorowitz/nflplaybyplay2009to2016)
+  - Dữ liệu cấp phép xây dựng tại San Francisco (Mỹ): [tại đây](https://www.kaggle.com/aparnashastry/building-permit-applications-data)
   
 2) Ngày 2: 
   - Dữ liệu về các dự án Kickstarter: [tại đây](https://www.kaggle.com/kemical/kickstarter-projects)
