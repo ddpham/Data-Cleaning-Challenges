@@ -15,12 +15,12 @@ Các bài viết của Rachel được code trên Python, do đó, bài viết c
 ## Dữ liệu sử dụng:
 
 1) Ngày 1: 
-  - Dữ liệu giải bóng bầu dục Mỹ: [tại đây](https://www.kaggle.com/maxhorowitz/nflplaybyplay2009to2016)
-  - Dữ liệu cấp phép xây dựng tại San Francisco (Mỹ): [tại đây](https://www.kaggle.com/aparnashastry/building-permit-applications-data)
+  - Dữ liệu giải bóng bầu dục Mỹ (NFL Play by Play 2009-2017 (v4).csv): [tại đây](https://www.kaggle.com/maxhorowitz/nflplaybyplay2009to2016)
+  - Dữ liệu cấp phép xây dựng tại San Francisco (Mỹ)(Building_Permits.csv): [tại đây](https://www.kaggle.com/aparnashastry/building-permit-applications-data)
   
 2) Ngày 2: 
-  - Dữ liệu về các dự án Kickstarter: [tại đây](https://www.kaggle.com/kemical/kickstarter-projects)
-  - Dữ liệu về giấy phép nuôi thú tại Seattle (Mỹ): [tại đây](https://www.kaggle.com/aaronschlegel/seattle-pet-licenses)
+  - Dữ liệu về các dự án Kickstarter(ks-projects-201801.csv): [tại đây](https://www.kaggle.com/kemical/kickstarter-projects)
+  - Dữ liệu về giấy phép nuôi thú tại Seattle (Mỹ)(seattle_pet_licenses.csv): [tại đây](https://www.kaggle.com/aaronschlegel/seattle-pet-licenses)
   
 3) Ngày 3:
   - Dữ liệu về lở đất trên thế giới: [tại đây](https://www.kaggle.com/nasa/landslide-events)

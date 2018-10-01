@@ -6,18 +6,22 @@
   # 1) Detailed NFL Play-by-Play Data 2009-2017 (NFL Play by Play 2009-2017 (v4).csv)
   # 2) San Francisco Building Permits (Building_Permits.csv)
 
+## Key take-away points:
+  # 1) For categorical data (factor), replace NA by most appeared value
+  # 2) For numeric data, replace NA by mean or median
 
 ## Load required packages:
 library(tidyverse)
 library(data.table)
 library(pipeR)
+# install.packages(pipeR, dependencies = T)
 ## I'm a big fan of pipe operator from Kun Ren. His pipe operator (pipeR) is
 ## superior to magrittr.
 
 
 ## Read datasets to the environment:
-nfl_data <- read_csv("NFL Play by Play 2009-2017 (v4).csv", n_max=10000)
-sf_permits <- read_csv("Building_Permits.csv", n_max=10000)
+nfl_data <- read_csv("../data/NFL Play by Play 2009-2017 (v4).csv", n_max=10000)
+sf_permits <- read_csv("../data/Building_Permits.csv", n_max=10000)
 
 ## Check Null values:
 set.seed(42)
