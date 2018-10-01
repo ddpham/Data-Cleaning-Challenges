@@ -1,0 +1,166 @@
+---
+title: "Ngày 1: Xử lý dữ liệu bị thiếu"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+getwd()
+```
+### Dữ liệu sử dụng:
+
+1) Dữ liệu giải bóng bầu dục Mỹ (FL Play by Play 2009-2017 (v4).csv) 
+2) Dữ liệu cấp phép xây dựng tại San Francisco (Mỹ) (Building_Permits.csv)
+
+### Gọi các gói cần thiết
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+pck <- c('tidyverse', 'data.table', 'pipeR')
+sapply(pck, require, character.only=T)
+```
+
+Tôi là fan hâm mộ của gói pipeR với pipe operator được xây dựng bởi anh [Kun Ken](https://github.com/renkun-ken), gói pipeR của anh này vượt trội so với magrittr.
+
+### Đọc dữ liệu vào môi trường:
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+nfl_data <- read_csv("NFL Play by Play 2009-2017 (v4).csv", n_max=10000)
+sf_permits <- read_csv("Building_Permits.csv", n_max=10000)
+```
+
+*Lưu ý:* do dữ liệu của 2 bảng đều lớn nên để xử lý nhanh, tôi chỉ lấy 10,000 dòng làm ví dụ ở đây, các bạn có thể lấy toàn bộ bảng.
+
+### Kiểm tra gí trị bị thiếu (NA):
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+set.seed(42)
+nfl_data %>>% sample_n(10)
+sf_permits %>>% sample_n(10)
+nfl_data %>>% colnames # Kiểm tra toàn bộ tên cột của bảng
+sf_permits %>>% colnames
+```
+
+#### Đếm số lượng giá trị bị thiếu
+##### Tổng số lượng NA của cả bảng
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+nfl_data %>>%
+  is.na %>>% # Kiểm tra nếu dòng bị thiếu hay không
+  table %>>% # đếm số lượng NA/không phải NA (TRUE/FALSEE)
+  (~ nfl_na_total) %>>% # save table as nfl_na_total
+  print
+```
+
+Xử dụng prop.table để lấy %:
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+nfl_na_total %>>%
+  prop.table * 100
+```
+
+##### Số lượng NA của từng cột
+Sử dụng margin.table để đếm số lượng giá trị NA (TRUE)
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+(nfl_data %>>%
+  is.na() %>>%
+  margin.table(margin = 2) %>>% 
+  as.data.frame(col.names=c('ColNames','NACount'))) %>>% # biến đổi thành data.frame
+  setDT( keep.rownames = TRUE) %>>%
+  (~ nfl_na_details) # lưu kết quả thành nfl_na_details
+
+# Đổi tên cột của bảng mới tạo:
+names(nfl_na_details)[1] <- 'ColNames'
+names(nfl_na_details)[2] <- 'NA_Count'
+```
+
+Kiểm tra lại dữ liệu:
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+nfl_na_details %>>% head
+```
+
+Lọc lấy các trường có giá trị NA và % so với tổng số bản ghi
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+nfl_na_details %>>% 
+  filter(NA_Count > 0) %>>% # lọai bỏ các cột ko có NA
+  arrange(desc(NA_Count)) %>>% # sắp xếp từ cao xuống thấp
+  mutate('NA_pct'=NA_Count/nrow(nfl_data) * 100) %>>% # bổ sung %
+  (~ nfl_na_stats) # lưu kết quả thành nfl_na_stats
+
+nfl_na_stats %>>% head
+```
+
+#### Sửa gía trị NA:
+Hãy thử xóa bỏ các dòng dữ liệu có giá trị NA
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+nfl_data %>>% drop_na()
+```
+
+Chúng ta có thể thấy tất cả các bản ghi của bảng dữ liệu đều có ít nhất 1 cột có giá trị NA nên khi chúng ta thực hiện thao tác trên, kết quả không xuất hiện bản ghi nào.
+
+Hoặc chỉ lấy các cột có không chứa giá trị NA
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+na_col <- nfl_na_stats$ColNames
+nfl_data %>>%
+  select(-na_col) %>>%
+  head
+```
+
+Tuy nhiên, chỉ có số lượng ít các cột không có giá trị NA. Vậy chúng ta sẽ sửa các gía trị NA thay vì xóa đi.
+
+Để sửa gía trị NA, chúng ta có thể có 1 số cách như:
+1) Đối với dữ liệu dạng factor (category), có thẻ thay thế bằng gía trị phổ biến nhất
+2) Đối với dữ liệu dạng số, có thể sửa thành gía trị trung bình hoặc giá trị trung vị.
+...
+
+Hãy trọn 2 cột dữ liệu cho từng ví dụ trên:
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+nfl_data %>>% str
+```
+
+Chúng ta sẽ chọn PassLength và Home_WP_pre.
+
+##### PassLength:
+PassLength là cột dữ liệu dạng chữ (chr).
+Lọc ra các gía trị NA:
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+nfl_PL_NA <- nfl_data[is.na(nfl_data$PassLength), ]
+```
+
+Tìm giá trị xuất hiện nhiều nhất
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+(nfl_data[!is.na(nfl_data$PassLength), ] %>>%
+  count(PassLength) %>>% # đếm các giá trị
+  arrange(desc(n)) # sắp xếp tần xuất theo thứ tự cao thấp
+)$PassLength[1] %>>%  # lấy giá trị đầu tiên của cột PassLength
+  (~PL_most_freq) %>>% # lưu kết quả thành PL_mostành_freq
+  print
+```
+
+Sửa các giá trị NA thành PL_mostành_freq
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+nfl_PL_NA <- replace_na(nfl_PL_NA, list(PassLength=PL_most_freq))
+nfl_PL_NA$PassLength 
+```
+
+Chúng ta có thể thấy các giá trị NA giờ đã chuyển thành "short".
+
+##### Home_WP_pre:
+Home_WP_pre là cột dữ liệu dạng số, có thể sửa giá trị NA thành số trung bình hoặc số trung vị.
+
+Lọc ra các gía trị NA:
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+nfl_HWP_NA <- nfl_data[is.na(nfl_data$Home_WP_pre), ]
+nfl_HWP_NA$Home_WP_pre %>>% head
+```
+
+Sửa giá trị NA thành số trung bình:
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+mean(nfl_data$Home_WP_pre, na.rm=T) # kiểm tra giá trị trung bình
+(nfl_HWP_NA %>>%
+    replace_na(list(Home_WP_pre=mean(nfl_data$Home_WP_pre, na.rm=T)))
+)$Home_WP_pre
+```
+
+Sửa giá trị NA thành số trung vị:
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+median(nfl_data$Home_WP_pre, na.rm=T) # kiểm tra gía trị trung vị
+(nfl_HWP_NA %>>%
+    replace_na(list(Home_WP_pre=median(nfl_data$Home_WP_pre, na.rm=T)))
+)$Home_WP_pre
+```
+
+Chúng ta có thể làm tương tự với các cột dữ liệu khác và với dữ liệu cấp phép xây dựng tại San Francisco.
