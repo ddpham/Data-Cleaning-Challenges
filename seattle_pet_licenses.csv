@@ -1,0 +1,11 @@
+animal_s_name,license_issue_date,license_number,primary_breed,secondary_breed,species,zip_code
+Ozzy,2005-03-29T00:00:00.000,130651,"Dachshund, Standard Smooth Haired",,Dog,98104
+Jack,2009-12-23T00:00:00.000,898148,"Schnauzer, Miniature","Terrier, Rat",Dog,98107
+Ginger,2006-01-20T00:00:00.000,29654,"Retriever, Golden","Retriever, Labrador",Dog,98117
+Pepper,2006-02-07T00:00:00.000,75432,Manx,Mix,Cat,98103
+Addy,2006-08-04T00:00:00.000,729899,"Retriever, Golden",,Dog,98105
+Rustie,2007-07-24T00:00:00.000,437433,"Dachshund, Standard Smooth Haired",,Dog,98108
+Lady,2006-12-06T00:00:00.000,959078,Doberman Pinscher,,Dog,98104
+Emily,2007-11-19T00:00:00.000,895915,Domestic Medium Hair,,Cat,98103
+Pancho,2007-12-04T00:00:00.000,957798,"Chihuahua, Short Coat",,Dog,
+Sampson,2008-01-31T00:00:00.000,26600,Shepherd,Siberian Husky,Dog,98106
